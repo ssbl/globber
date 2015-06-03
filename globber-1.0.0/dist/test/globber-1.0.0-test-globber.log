@@ -1,0 +1,26 @@
+Test suite test-globber: RUNNING...
+
+Testing Globber
+  empty pattern
+    matches empty string
+    shouldn't match non-empty string
+  simple pattern
+    single chars and char sets
+    should not match
+  pattern with ?
+    matches any char
+    should not match
+  pattern with *
+    matches any string
+    matches empty string
+  real patterns
+    should match
+    should match
+    should match
+    should match
+    invalid pattern
+
+Finished in 0.0004 seconds
+13 examples, 0 failures
+Test suite test-globber: PASS
+Test suite logged to: dist/test/globber-1.0.0-test-globber.log
