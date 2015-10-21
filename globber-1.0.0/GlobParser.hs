@@ -2,7 +2,6 @@ module GlobParser where
 
 import           AParser
 import           Control.Applicative
-import           Data.Char
 
 data SetToken = Single Char
               | Range Char Char
@@ -52,6 +51,7 @@ parsePattern p = case runParser parseToken p of
                    Just (x, rest) -> x : parsePattern rest
 
 setToList :: Set -> String
-setToList []                   = []
-setToList ((Single x) : xs)    = x : setToList xs
-setToList ((Range x1 x2) : xs) = [x1..x2] ++ setToList xs
+setToList []                 = []
+setToList (Single x : xs)    = x : setToList xs
+setToList (Range x1 x2 : xs) = [x1..x2] ++ setToList xs
+
