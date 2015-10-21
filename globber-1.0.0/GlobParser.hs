@@ -17,26 +17,25 @@ data Token = U Char
            | Eof
              deriving Show
 
-escape :: Parser Char
-escape = char '\\' *> (satisfy isPrint)
+flnotElem = flip notElem
 
-single :: Parser Char
-single = satisfy f
-    where f x = case x of
-                  ']' -> False
-                  '[' -> False
-                  '?' -> False
-                  '*' -> False
-                  _   -> True
+escape :: String -> Parser Char
+escape xs = char '\\' *> (char '\\' <|> satisfy (flnotElem xs))
+
+anyExcept :: String -> Parser Char
+anyExcept reserved = escape reserved <|> satisfy (flnotElem reserved)
+
+setChar :: Parser Char
+setChar = anyExcept "]"
 
 anyChar :: Parser Char
-anyChar = (escape <|> single)
+anyChar = anyExcept "[?*"
 
 parseRange :: Parser SetToken
 parseRange = (\x _ y -> Range x y) <$> anyChar <*> char '-' <*> anyChar
 
 set :: Parser Set
-set = char '[' *> some (parseRange <|> Single <$> anyChar) <* char ']'
+set = char '[' *> some (parseRange <|> Single <$> setChar) <* char ']'
 
 parseAny :: Parser Token
 parseAny = Any <$ char '?'
@@ -45,7 +44,7 @@ parseMany :: Parser Token
 parseMany = Many <$ char '*'
 
 parseToken :: Parser Token
-parseToken = (U <$> anyChar) <|> parseAny <|> parseMany <|> (S <$> set)
+parseToken = (S <$> set) <|> parseAny <|> parseMany <|> (U <$> anyChar)
 
 parsePattern :: String -> [Token]
 parsePattern p = case runParser parseToken p of
