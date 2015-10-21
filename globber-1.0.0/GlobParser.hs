@@ -19,7 +19,7 @@ data Token = U Char
 flnotElem = flip notElem
 
 escape :: String -> Parser Char
-escape xs = char '\\' *> (char '\\' <|> satisfy (flnotElem xs))
+escape xs = char '\\' *> (satisfy (flip elem xs) <|> char '\\')
 
 anyExcept :: String -> Parser Char
 anyExcept reserved = escape reserved <|> satisfy (flnotElem reserved)
