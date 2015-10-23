@@ -1,13 +1,16 @@
 module Globber (matchGlob) where
 
 import           AParser    (runParser)
-import           Data.Maybe (isJust)
 import           GlobParser (Token (..), anyChar, parsePattern, setToList)
+
+import           Data.Maybe (fromJust, isJust)
 
 type GlobPattern = String
 
 matchGlob :: GlobPattern -> String -> Bool
-matchGlob p = go (parsePattern p)
+matchGlob p = let pp = parsePattern p
+              in
+                if isJust pp then go (fromJust pp) else const False
     where go [Eof] []        = True
           go [Eof] _         = False
           go [Many,Eof] []   = True

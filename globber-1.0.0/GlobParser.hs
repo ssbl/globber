@@ -45,10 +45,11 @@ parseMany = Many <$ char '*'
 parseToken :: Parser Token
 parseToken = (S <$> set) <|> parseAny <|> parseMany <|> (U <$> anyChar)
 
-parsePattern :: String -> [Token]
-parsePattern p = case runParser parseToken p of
-                   Nothing        -> [Eof]
-                   Just (x, rest) -> x : parsePattern rest
+parsePattern :: String -> Maybe [Token]
+parsePattern [] = Just [Eof]
+parsePattern p  = case runParser parseToken p of
+                   Just (x, rest) -> (:) <$> Just x <*> parsePattern rest
+                   _              -> Nothing
 
 setToList :: Set -> String
 setToList []                 = []
