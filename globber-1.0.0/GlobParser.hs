@@ -54,4 +54,3 @@ setToList :: Set -> String
 setToList []                 = []
 setToList (Single x : xs)    = x : setToList xs
 setToList (Range x1 x2 : xs) = [x1..x2] ++ setToList xs
-

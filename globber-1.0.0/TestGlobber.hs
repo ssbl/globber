@@ -37,8 +37,8 @@ main = hspec $ describe "Testing Globber" $ do
       it "should match" $
          matchGlob "*bar*" "foobarbar" `shouldBe` True
       it "should match" $
-         matchGlob "*[0-9_\\?]*" "hello0there" `shouldBe` True
+         matchGlob "*[0-9_?]*" "hello0there" `shouldBe` True
       it "should match" $
          matchGlob "*bar" "foobarbar" `shouldBe` True
       it "invalid pattern" $
-         matchGlob "[0-9?]" "asd" `shouldBe` False
+         matchGlob "[0-9\\*]" "asd" `shouldBe` False
