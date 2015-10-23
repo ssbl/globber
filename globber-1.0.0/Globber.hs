@@ -1,7 +1,8 @@
 module Globber (matchGlob) where
 
-import           AParser
-import           GlobParser
+import           AParser    (runParser)
+import           Data.Maybe (isJust)
+import           GlobParser (Token (..), anyChar, parsePattern, setToList)
 
 type GlobPattern = String
 
@@ -14,7 +15,6 @@ matchGlob p = go (parsePattern p)
           go (x:xs) t@(y:ys) = case x of
                            U c  -> (c == y) && go xs ys
                            S cs -> elem y (setToList cs) && go xs ys
-                           Any  -> case runParser anyChar t of
-                                     Nothing -> False
-                                     _       -> go xs ys
+                           Any  -> if isJust (runParser anyChar t)
+                                   then go xs ys else False
                            Many -> if go xs t then True else go (x:xs) ys
