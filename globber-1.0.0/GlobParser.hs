@@ -1,6 +1,7 @@
 module GlobParser where
 
 import           AParser
+
 import           Control.Applicative
 
 data SetToken = Single Char
@@ -16,13 +17,11 @@ data Token = U Char
            | Eof
              deriving Show
 
-flnotElem = flip notElem
-
 escape :: String -> Parser Char
-escape xs = char '\\' *> (satisfy (flip elem xs) <|> char '\\')
+escape xs = char '\\' *> (satisfy (`elem` xs) <|> char '\\')
 
 anyExcept :: String -> Parser Char
-anyExcept reserved = escape reserved <|> satisfy (flnotElem reserved)
+anyExcept reserved = escape reserved <|> satisfy (`notElem` ('\\':reserved))
 
 setChar :: Parser Char
 setChar = anyExcept "]"
